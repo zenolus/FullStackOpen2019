@@ -1,0 +1,17 @@
+note over browser
+the user clicks the save button
+the browser sends the data to server
+end note
+
+browser-server HTTP POST httpsfullstack-exampleapp.herokuapp.comnew_note_spa
+
+note over server
+server receives the note and
+returns a message to the browser
+end note
+
+server--browser {messagenote created}
+
+note over browser
+browser executes the event handler
+that renders notes t
