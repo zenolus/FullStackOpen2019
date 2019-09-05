@@ -1,5 +1,6 @@
+import personService from '../services/requests'
 import React, {useState} from 'react'
-const PersonForm = ({persons, setPersons}) => {
+const PersonForm = ({persons, setPersons, setColor, setMessage}) => {
     const [ newName, setNewName ] = useState('')
     const [ newNum, setNewNum ] = useState('')
     const onClick = (event) => {
@@ -8,11 +9,29 @@ const PersonForm = ({persons, setPersons}) => {
           name: newName,
           number: newNum
         }
-        if(persons.find((person) => person.name === newName)){
-          window.alert(`${newName} is already added to phonebook`)
+        const person = persons.find((person) => person.name.toLowerCase() === newName.toLowerCase())
+        if(person){
+          const personID = person.id
+          const update = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)
+          if(update){
+          personService
+            .update(personID, newPerson)
+            .then(updated => {
+                setPersons(persons.map(person => person.id !== personID ? person : updated))
+            })
+            setTimeout(()=>setMessage(null), 5000)
+          }
         }
-        else
-          setPersons(persons.concat(newPerson))
+        else{
+            personService
+                .create(newPerson)
+                .then(returnedPersons => 
+                    setPersons(persons.concat(returnedPersons))
+                )
+            setColor("green")
+            setMessage(`${newPerson.name}'s contact has been added.`)
+            setTimeout(()=>setMessage(null), 5000)
+        }
         setNewName('')
         setNewNum('')
     }
