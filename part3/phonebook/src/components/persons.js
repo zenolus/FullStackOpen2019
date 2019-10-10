@@ -1,7 +1,7 @@
 import React from 'react'
 import personService from '../services/requests'
 const Persons = ({persons, setPersons, flt, setColor, setMessage}) => {
-    console.log(persons)
+    console.log(typeof persons)
     const selectedPersons = persons.filter((person)=>{
       return person.name.toLowerCase().includes(flt.toLowerCase())
     })

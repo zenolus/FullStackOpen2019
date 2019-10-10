@@ -1,5 +1,6 @@
 import personService from '../services/requests'
 import React, {useState} from 'react'
+import { set } from 'mongoose'
 const PersonForm = ({persons, setPersons, setColor, setMessage}) => {
     const [ newName, setNewName ] = useState('')
     const [ newNum, setNewNum ] = useState('')
@@ -9,6 +10,7 @@ const PersonForm = ({persons, setPersons, setColor, setMessage}) => {
           name: newName,
           number: newNum
         }
+        console.log(persons)
         const person = persons.find((person) => person.name.toLowerCase() === newName.toLowerCase())
         if(person){
           const personID = person.id
@@ -26,11 +28,18 @@ const PersonForm = ({persons, setPersons, setColor, setMessage}) => {
             personService
                 .create(newPerson)
                 .then(returnedPersons => {
-                    setPersons(returnedPersons)//persons.concat(returnedPersons))
+                    setPersons(persons.concat(returnedPersons))
                 })
-            setColor("green")
-            setMessage(`${newPerson.name}'s contact has been added.`)
-            setTimeout(()=>setMessage(null), 5000)
+            .then(response => {
+                setColor("green")
+                setMessage(`${newPerson.name}'s contact has been added.`)
+                setTimeout(()=>setMessage(null), 5000)
+            })
+            .catch(error => {
+                setColor("red")
+                setMessage(`${error.message}`)
+                setTimeout(() => setMessage(null), 5000)
+            })
         }
         setNewName('')
         setNewNum('')
